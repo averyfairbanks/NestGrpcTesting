@@ -6,7 +6,7 @@ import {
   type Blog,
   type BlogServiceController,
   type FindOneByIdRequest,
-} from './interfaces/blog';
+} from './interfaces/blog.interface';
 
 @Controller('blog')
 @BlogServiceControllerMethods()

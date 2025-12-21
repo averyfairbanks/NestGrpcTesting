@@ -2,7 +2,7 @@ import { ReflectionService } from '@grpc/reflection';
 import { GrpcOptions, Transport } from '@nestjs/microservices';
 import { HealthImplementation, protoPath as healthCheckProtoPath } from 'grpc-health-check';
 import { join } from 'path';
-import { BLOG_PACKAGE_NAME } from './blog/interfaces/blog';
+import { BLOG_PACKAGE_NAME } from './blog/interfaces/blog.interface';
 
 export const grpcClientOptions: GrpcOptions = {
   transport: Transport.GRPC,

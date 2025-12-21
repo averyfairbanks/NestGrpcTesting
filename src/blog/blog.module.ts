@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 import { grpcClientOptions } from 'src/grpc-client.options';
-import { BLOG_PACKAGE_NAME } from './interfaces/blog';
+import { BLOG_PACKAGE_NAME } from './interfaces/blog.interface';
 import { BlogController } from './blog.controller';
 
 @Module({
