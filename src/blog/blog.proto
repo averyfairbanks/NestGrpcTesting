@@ -1,12 +1,12 @@
-syntax = "proto3"
+syntax = "proto3";
 
 package blog;
 
 service BlogService {
-    rpc FindById(FindByIdRequest) returns (Blog);
+    rpc FindOneById(FindOneByIdRequest) returns (Blog);
 }
 
-message FindByIdRequest {
+message FindOneByIdRequest {
     int32 id = 1;
 }
 
