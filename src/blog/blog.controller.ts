@@ -1,8 +1,6 @@
-import { Controller, Inject, OnModuleInit } from '@nestjs/common';
-import { GrpcMethod, type ClientGrpc } from '@nestjs/microservices';
+import { Controller } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
-import { Metadata, type ServerUnaryCall } from '@grpc/grpc-js';
 import {
   BlogServiceControllerMethods,
   type Blog,
