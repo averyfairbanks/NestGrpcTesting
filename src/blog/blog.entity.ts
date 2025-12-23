@@ -1,18 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Blog } from "./interfaces/blog.interface";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Blog } from './interfaces/blog.interface';
 
-@Entity()
+@Entity({ name: 'blog' })
 export class BlogEntity implements Blog {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    title: string;
+  @Column({ type: 'varchar', length: 128 })
+  title: string;
 
-    @Column()
-    author: string;
+  @Column({ type: 'varchar', length: 64 })
+  author: string;
 
-    @Column({type: "jsonb", default: {}})
-    body: { [key: string]: any; } | undefined;
-
+  @Column({ type: 'jsonb', default: {} })
+  body: { [key: string]: any } | undefined;
 }

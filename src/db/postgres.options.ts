@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { BlogEntity } from 'src/blog/blog.entity';
+import { Migrations1766520355148 as InitMigration } from './migrations/1766520355148-migrations';
 
 export const pgOptions: TypeOrmModuleOptions = {
   type: 'postgres',
@@ -7,6 +8,9 @@ export const pgOptions: TypeOrmModuleOptions = {
   username: 'admin',
   password: 'admin',
   database: 'sbs',
-  synchronize: true, // TODO: make this a .env var for only localdev (or until that doesn't make sense)
+  synchronize: false,
   entities: [BlogEntity],
+  migrations: [InitMigration],
+  migrationsRun: true,
+  logging: 'all',
 };

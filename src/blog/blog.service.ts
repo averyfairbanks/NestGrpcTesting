@@ -9,7 +9,7 @@ export class BlogService {
     @InjectRepository(BlogEntity)
     private blogRepository: Repository<BlogEntity>,
   ) {}
-  
+
   findAll() {
     return `This action returns all blogs`;
   }
