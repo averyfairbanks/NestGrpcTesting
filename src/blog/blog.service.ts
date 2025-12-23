@@ -1,8 +1,12 @@
-import { UpsertBlogDto } from './dto/upsert-blog.dto';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
+import { UpsertBlogDto } from './dto/upsert-blog.dto';
 import { BlogEntity } from './entities/blog.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class BlogService {
@@ -19,8 +23,17 @@ export class BlogService {
     return this.blogRepository.find();
   }
 
-  findOne(id: number): Promise<BlogEntity> {
-    return this.blogRepository.findOneByOrFail({ id });
+  async findOne(id: number): Promise<BlogEntity> {
+    try {
+      const blog = await this.blogRepository.findOneBy({ id });
+      if (blog === null) {
+        throw new NotFoundException(`No blog with id: ${id} found!`);
+      }
+
+      return blog;
+    } catch (err) {
+      throw new InternalServerErrorException(err);
+    }
   }
 
   delete(id: number) {
