@@ -26,8 +26,8 @@ export class BlogService {
   async findOne(id: number): Promise<BlogEntity> {
     try {
       const blog = await this.blogRepository.findOneBy({ id });
-      if (blog === null) {
-        throw new NotFoundException(`No blog with id: ${id} found!`);
+      if (!blog) {
+        throw new NotFoundException(`No blog with id: ${id} found`);
       }
 
       return blog;
