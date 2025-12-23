@@ -5,6 +5,9 @@ import 'google/protobuf/empty.proto';
 
 package blog;
 
+// TODO: Add ERROR object in separate class
+// Make every response oneof {error || response}
+// Translate service errors to closest status.code equivalent
 service BlogService {
   rpc FindOneById(FindOneByIdRequest) returns (Blog);
   rpc FindAll(google.protobuf.Empty) returns (FindAllBlogsResponse);
