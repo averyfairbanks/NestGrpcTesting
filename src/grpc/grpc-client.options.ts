@@ -11,7 +11,7 @@ export const grpcClientOptions: GrpcOptions = {
   transport: Transport.GRPC,
   options: {
     package: BLOG_PACKAGE_NAME,
-    protoPath: [healthCheckProtoPath, join(__dirname, '../assets/blog.proto')],
+    protoPath: [healthCheckProtoPath, join(__dirname, '../protos/blog.proto')],
     onLoadPackageDefinition: (pkg, server) => {
       const reflection = new ReflectionService(pkg);
       reflection.addToServer(server);

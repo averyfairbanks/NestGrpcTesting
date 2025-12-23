@@ -16,7 +16,7 @@ export class BlogService {
   }
 
   findAll() {
-    return this.blogRepository.findAndCount();
+    return this.blogRepository.find();
   }
 
   findOne(id: number): Promise<BlogEntity> {

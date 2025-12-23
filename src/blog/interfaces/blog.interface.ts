@@ -8,6 +8,7 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { wrappers } from 'protobufjs';
 import { Observable } from 'rxjs';
+import { Empty } from './google/protobuf/empty.interface';
 import { Struct } from './google/protobuf/struct.interface';
 
 export const protobufPackage = 'blog';
@@ -23,6 +24,10 @@ export interface Blog {
   body: { [key: string]: any } | undefined;
 }
 
+export interface FindAllBlogsResponse {
+  blogs: Blog[];
+}
+
 export const BLOG_PACKAGE_NAME = 'blog';
 
 wrappers['.google.protobuf.Struct'] = {
@@ -32,17 +37,26 @@ wrappers['.google.protobuf.Struct'] = {
 
 export interface BlogServiceClient {
   findOneById(request: FindOneByIdRequest): Observable<Blog>;
+
+  findAll(request: Empty): Observable<FindAllBlogsResponse>;
 }
 
 export interface BlogServiceController {
   findOneById(
     request: FindOneByIdRequest,
   ): Promise<Blog> | Observable<Blog> | Blog;
+
+  findAll(
+    request: Empty,
+  ):
+    | Promise<FindAllBlogsResponse>
+    | Observable<FindAllBlogsResponse>
+    | FindAllBlogsResponse;
 }
 
 export function BlogServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['findOneById'];
+    const grpcMethods: string[] = ['findOneById', 'findAll'];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,
