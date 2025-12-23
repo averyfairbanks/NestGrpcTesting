@@ -8,6 +8,7 @@ export const pgOptions: TypeOrmModuleOptions = {
   username: 'admin',
   password: 'admin',
   database: 'sbs',
+  schema: 'public',
   synchronize: false,
   entities: [BlogEntity],
   migrations: [InitMigration],
