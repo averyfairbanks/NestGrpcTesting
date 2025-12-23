@@ -28,6 +28,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/microservices": "^11.1.9",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.2.3",
     "@nestjs/typeorm": "^11.0.0",
     "grpc-health-check": "^2.1.0",
     "pg": "^8.16.3",
