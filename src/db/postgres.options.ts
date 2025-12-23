@@ -1,5 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { BlogEntity } from 'src/blog/blog.entity';
+import { BlogEntity } from 'src/blog/entities/blog.entity';
 import { Migrations1766520355148 as InitMigration } from './migrations/1766520355148-migrations';
 
 export const pgOptions: TypeOrmModuleOptions = {
