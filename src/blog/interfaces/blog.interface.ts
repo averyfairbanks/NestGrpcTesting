@@ -5,10 +5,12 @@
 // source: blog.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { wrappers } from 'protobufjs';
+import { Observable } from 'rxjs';
+import { Struct } from './google/protobuf/struct.interface';
 
-export const protobufPackage = "blog";
+export const protobufPackage = 'blog';
 
 export interface FindOneByIdRequest {
   id: number;
@@ -18,33 +20,53 @@ export interface Blog {
   id: number;
   title: string;
   author: string;
-  /** change to json */
-  body: string;
+  body: { [key: string]: any } | undefined;
 }
 
-export const BLOG_PACKAGE_NAME = "blog";
+export const BLOG_PACKAGE_NAME = 'blog';
+
+wrappers['.google.protobuf.Struct'] = {
+  fromObject: Struct.wrap,
+  toObject: Struct.unwrap,
+} as any;
 
 export interface BlogServiceClient {
-  findOneById(request: FindOneByIdRequest, ...rest: any): Observable<Blog>;
+  findOneById(request: FindOneByIdRequest): Observable<Blog>;
 }
 
 export interface BlogServiceController {
-  findOneById(request: FindOneByIdRequest, ...rest: any): Promise<Blog> | Observable<Blog> | Blog;
+  findOneById(
+    request: FindOneByIdRequest,
+  ): Promise<Blog> | Observable<Blog> | Blog;
 }
 
 export function BlogServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["findOneById"];
+    const grpcMethods: string[] = ['findOneById'];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("BlogService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('BlogService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("BlogService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('BlogService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const BLOG_SERVICE_NAME = "BlogService";
+export const BLOG_SERVICE_NAME = 'BlogService';

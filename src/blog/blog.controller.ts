@@ -14,6 +14,6 @@ export class BlogController implements BlogServiceController {
   findOneById(
     request: FindOneByIdRequest,
   ): Promise<Blog> | Observable<Blog> | Blog {
-    return { id: 1, title: 'test', author: 'me', body: 'body' };
+    return { id: 1, title: 'test', author: 'me', body: {} };
   }
 }

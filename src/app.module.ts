@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { BlogModule } from './blog/blog.module';
+import { pgOptions } from './db/postgres.options';
 
 @Module({
-  imports: [BlogModule],
+  imports: [TypeOrmModule.forRoot(pgOptions), BlogModule],
   controllers: [],
   providers: [],
 })
