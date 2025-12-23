@@ -13,5 +13,5 @@ export const pgOptions: TypeOrmModuleOptions = {
   entities: [BlogEntity],
   migrations: [InitMigration],
   migrationsRun: true,
-  logging: 'all',
+  logging: 'all', // TODO: disable as needed
 };

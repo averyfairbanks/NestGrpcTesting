@@ -9,7 +9,7 @@ async function bootstrap() {
     grpcClientOptions,
   );
 
-  app.useLogger(['log', 'error']);
+  app.useLogger(['log', 'error']); // TODO: disable as needed
   await app.listen();
 }
 bootstrap();
