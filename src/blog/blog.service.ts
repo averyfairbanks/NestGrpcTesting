@@ -1,12 +1,19 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityNotFoundError, Repository } from 'typeorm';
-import { UpsertBlogDto } from './dto/upsert-blog.dto';
+import {
+  EntityNotFoundError,
+  QueryDeepPartialEntity,
+  Repository,
+} from 'typeorm';
+import { CreateBlogDto } from './dto/create-blog.dto';
 import { BlogEntity } from './entities/blog.entity';
+import { Blog, GetBlogRequest } from './interfaces/blog.interface';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Injectable()
 export class BlogService {
@@ -15,28 +22,44 @@ export class BlogService {
     private blogRepository: Repository<BlogEntity>,
   ) {}
 
-  create(createDto: UpsertBlogDto) {
-    return this.blogRepository.create(createDto);
-  }
-
   findAll() {
     return this.blogRepository.find();
   }
 
-  async findOne(id: number): Promise<BlogEntity> {
-    try {
-      const blog = await this.blogRepository.findOneBy({ id });
-      if (!blog) {
-        throw new NotFoundException(`No blog with id: ${id} found`);
-      }
+  async findOne(request: GetBlogRequest): Promise<BlogEntity> {
+    const { id, title } = request;
+    let lookupValue;
+    if (id) {
+      lookupValue = { id };
+    } else if (title) {
+      lookupValue = { title };
+    } else {
+      throw new BadRequestException(
+        `Bad request for blog lookup ${JSON.stringify(request)}`,
+      );
+    }
 
-      return blog;
+    try {
+      return await this.blogRepository.findOneByOrFail(lookupValue);
     } catch (err) {
+      if (err instanceof EntityNotFoundError) {
+        throw new NotFoundException(
+          `No blog with found with ${JSON.stringify(lookupValue)}`,
+        );
+      }
       throw new InternalServerErrorException(err);
     }
   }
 
-  delete(id: number) {
-    return this.blogRepository.delete({ id });
+  create(createDto: CreateBlogDto) {
+    return this.blogRepository.save(createDto);
+  }
+
+  update(updateDto: UpdateBlogDto) {
+    return this.blogRepository.save(updateDto)
+  }
+
+  delete(entity: BlogEntity) {
+    return this.blogRepository.remove(entity);
   }
 }

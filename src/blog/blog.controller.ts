@@ -1,17 +1,17 @@
 import { Controller, Inject, UseFilters } from '@nestjs/common';
-import { Observable, Subject } from 'rxjs';
-import { status } from '@grpc/grpc-js';
 
+import { HttpToRpcExceptionFilter } from 'src/filters/http-to-rpc-exception.filter';
 import { BlogService } from './blog.service';
 import {
   BlogServiceControllerMethods,
-  FindAllBlogsResponse,
+  CreateRequest,
+  GetBlogRequest,
+  ListBlogsResponse,
+  UpdateRequest,
   type Blog,
   type BlogServiceController,
-  type FindOneByIdRequest,
 } from './interfaces/blog.interface';
 import { Empty } from './interfaces/google/protobuf/empty.interface';
-import  {HttpToRpcExceptionFilter}  from 'src/filters/http-to-rpc-exception.filter';
 
 @Controller('blog')
 @BlogServiceControllerMethods()
@@ -19,13 +19,21 @@ import  {HttpToRpcExceptionFilter}  from 'src/filters/http-to-rpc-exception.filt
 export class BlogController implements BlogServiceController {
   constructor(@Inject() private blogService: BlogService) {}
 
-  findAll(_: Empty): Promise<FindAllBlogsResponse> {
+  getBlog(request: GetBlogRequest): Promise<Blog> {
+    return this.blogService.findOne(request);
+  }
+
+  listBlogs(_: Empty): Promise<ListBlogsResponse> {
     return this.blogService.findAll().then((blogs) => {
       return { blogs };
     });
   }
 
-  findOneById(request: FindOneByIdRequest): Promise<Blog> {
-    return this.blogService.findOne(request.id);
+  create(request: CreateRequest): Promise<Blog> {
+    return this.blogService.create(request);
+  }
+
+  update(request: UpdateRequest): Promise<Blog> {
+    return this.blogService.update(request);
   }
 }

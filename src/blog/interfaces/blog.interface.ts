@@ -5,17 +5,13 @@
 // source: blog.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { wrappers } from 'protobufjs';
-import { Observable } from 'rxjs';
-import { Empty } from './google/protobuf/empty.interface';
-import { Struct } from './google/protobuf/struct.interface';
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { wrappers } from "protobufjs";
+import { Observable } from "rxjs";
+import { Empty } from "./google/protobuf/empty.interface";
+import { Struct } from "./google/protobuf/struct.interface";
 
-export const protobufPackage = 'blog';
-
-export interface FindOneByIdRequest {
-  id: number;
-}
+export const protobufPackage = "blog";
 
 export interface Blog {
   id: number;
@@ -24,63 +20,65 @@ export interface Blog {
   body: { [key: string]: any } | undefined;
 }
 
-export interface FindAllBlogsResponse {
+export interface GetBlogRequest {
+  id?: number | undefined;
+  title?: string | undefined;
+}
+
+export interface ListBlogsResponse {
   blogs: Blog[];
 }
 
-export const BLOG_PACKAGE_NAME = 'blog';
+export interface CreateRequest {
+  title: string;
+  author: string;
+  body: { [key: string]: any } | undefined;
+}
 
-wrappers['.google.protobuf.Struct'] = {
-  fromObject: Struct.wrap,
-  toObject: Struct.unwrap,
-} as any;
+export interface UpdateRequest {
+  id: number;
+  title?: string | undefined;
+  author?: string | undefined;
+  body?: { [key: string]: any } | undefined;
+}
+
+export const BLOG_PACKAGE_NAME = "blog";
+
+wrappers[".google.protobuf.Struct"] = { fromObject: Struct.wrap, toObject: Struct.unwrap } as any;
 
 export interface BlogServiceClient {
-  findOneById(request: FindOneByIdRequest): Observable<Blog>;
+  getBlog(request: GetBlogRequest): Observable<Blog>;
 
-  findAll(request: Empty): Observable<FindAllBlogsResponse>;
+  listBlogs(request: Empty): Observable<ListBlogsResponse>;
+
+  create(request: CreateRequest): Observable<Blog>;
+
+  update(request: UpdateRequest): Observable<Blog>;
 }
 
 export interface BlogServiceController {
-  findOneById(
-    request: FindOneByIdRequest,
-  ): Promise<Blog> | Observable<Blog> | Blog;
+  getBlog(request: GetBlogRequest): Promise<Blog> | Observable<Blog> | Blog;
 
-  findAll(
-    request: Empty,
-  ):
-    | Promise<FindAllBlogsResponse>
-    | Observable<FindAllBlogsResponse>
-    | FindAllBlogsResponse;
+  listBlogs(request: Empty): Promise<ListBlogsResponse> | Observable<ListBlogsResponse> | ListBlogsResponse;
+
+  create(request: CreateRequest): Promise<Blog> | Observable<Blog> | Blog;
+
+  update(request: UpdateRequest): Promise<Blog> | Observable<Blog> | Blog;
 }
 
 export function BlogServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['findOneById', 'findAll'];
+    const grpcMethods: string[] = ["getBlog", "listBlogs", "create", "update"];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcMethod('BlogService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("BlogService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcStreamMethod('BlogService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("BlogService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const BLOG_SERVICE_NAME = 'BlogService';
+export const BLOG_SERVICE_NAME = "BlogService";
