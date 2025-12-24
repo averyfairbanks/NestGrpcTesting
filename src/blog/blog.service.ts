@@ -1,8 +1,15 @@
-import { UpsertBlogDto } from './dto/upsert-blog.dto';
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 import { BlogEntity } from './entities/blog.entity';
-import { Repository } from 'typeorm';
+import { GetBlogRequest } from './interfaces/blog.interface';
 
 @Injectable()
 export class BlogService {
@@ -11,19 +18,48 @@ export class BlogService {
     private blogRepository: Repository<BlogEntity>,
   ) {}
 
-  create(createDto: UpsertBlogDto) {
-    return this.blogRepository.create(createDto);
-  }
-
   findAll() {
+    // TODO: pagination/search/sort/filter/etc
     return this.blogRepository.find();
   }
 
-  findOne(id: number): Promise<BlogEntity> {
-    return this.blogRepository.findOneByOrFail({ id });
+  async findOne(request: GetBlogRequest): Promise<BlogEntity> {
+    const { id, title } = request;
+    let lookupValue;
+    if (id) {
+      lookupValue = { id };
+    } else if (title) {
+      lookupValue = { title };
+    } else {
+      throw new BadRequestException(
+        `Bad request for blog lookup ${JSON.stringify(request)}`,
+      );
+    }
+
+    try {
+      return await this.blogRepository.findOneByOrFail(lookupValue);
+    } catch (err) {
+      if (err instanceof EntityNotFoundError) {
+        throw new NotFoundException(
+          `No blog with found with ${JSON.stringify(lookupValue)}`,
+        );
+      }
+      throw new InternalServerErrorException(err);
+    }
   }
 
-  delete(id: number) {
-    return this.blogRepository.delete({ id });
+  create(createDto: CreateBlogDto) {
+    // TODO: exception handling
+    return this.blogRepository.save(createDto);
+  }
+
+  update(updateDto: UpdateBlogDto) {
+    // TODO: exception handling
+    return this.blogRepository.save(updateDto);
+  }
+
+  delete(entity: BlogEntity) {
+    // TODO: exception handling
+    return this.blogRepository.remove(entity);
   }
 }

@@ -5,16 +5,11 @@ import 'google/protobuf/empty.proto';
 
 package blog;
 
-// TODO: Add ERROR object in separate class
-// Make every response oneof {error || response}
-// Translate service errors to closest status.code equivalent
 service BlogService {
-  rpc FindOneById(FindOneByIdRequest) returns (Blog);
-  rpc FindAll(google.protobuf.Empty) returns (FindAllBlogsResponse);
-}
-
-message FindOneByIdRequest {
-  int32 id = 1;
+  rpc GetBlog(GetBlogRequest) returns (Blog);
+  rpc ListBlogs(google.protobuf.Empty) returns (ListBlogsResponse);
+  rpc Create(CreateRequest) returns (Blog);
+  rpc Update(UpdateRequest) returns (Blog);
 }
 
 message Blog {
@@ -24,6 +19,26 @@ message Blog {
   google.protobuf.Struct body   = 4;
 }
 
-message FindAllBlogsResponse {
+message GetBlogRequest {
+  oneof lookup {
+    int32  id    = 1;
+    string title = 2;
+  }
+}
+
+message ListBlogsResponse {
   repeated Blog blogs = 1;
+}
+
+message CreateRequest {
+  string                 title  = 1;
+  string                 author = 2;
+  google.protobuf.Struct body   = 3;
+}
+
+message UpdateRequest {
+  int32                           id     = 1;
+  optional string                 title  = 2;
+  optional string                 author = 3;
+  optional google.protobuf.Struct body   = 4;
 }

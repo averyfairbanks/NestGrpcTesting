@@ -1,50 +1,39 @@
-import { Controller, Inject } from '@nestjs/common';
-import { Observable, Subject } from 'rxjs';
-import { status } from '@grpc/grpc-js';
+import { Controller, Inject, UseFilters } from '@nestjs/common';
 
+import { HttpToRpcExceptionFilter } from 'src/filters/http-to-rpc-exception.filter';
 import { BlogService } from './blog.service';
 import {
   BlogServiceControllerMethods,
-  FindAllBlogsResponse,
+  CreateRequest,
+  GetBlogRequest,
+  ListBlogsResponse,
+  UpdateRequest,
   type Blog,
   type BlogServiceController,
-  type FindOneByIdRequest,
 } from './interfaces/blog.interface';
-import { RpcException } from '@nestjs/microservices';
 import { Empty } from './interfaces/google/protobuf/empty.interface';
 
 @Controller('blog')
 @BlogServiceControllerMethods()
+@UseFilters(HttpToRpcExceptionFilter.getInstance())
 export class BlogController implements BlogServiceController {
   constructor(@Inject() private blogService: BlogService) {}
 
-  findAll(
-    _: Empty,
-  ):
-    | Promise<FindAllBlogsResponse>
-    | Observable<FindAllBlogsResponse>
-    | FindAllBlogsResponse {
-    return this.blogService
-      .findAll()
-      .then((blogs) => {
-        return { blogs };
-      })
-      .catch((err) => {
-        throw new RpcException({
-          code: status.NOT_FOUND,
-          message: err?.message,
-        });
-      });
+  getBlog(request: GetBlogRequest): Promise<Blog> {
+    return this.blogService.findOne(request);
   }
 
-  findOneById(
-    request: FindOneByIdRequest,
-  ): Promise<Blog> | Observable<Blog> | Blog {
-    return this.blogService.findOne(request.id).catch((err) => {
-      throw new RpcException({
-        code: status.NOT_FOUND,
-        message: err?.message || "Couldn't find entity.",
-      });
+  listBlogs(_: Empty): Promise<ListBlogsResponse> {
+    return this.blogService.findAll().then((blogs) => {
+      return { blogs };
     });
+  }
+
+  create(request: CreateRequest): Promise<Blog> {
+    return this.blogService.create(request);
+  }
+
+  update(request: UpdateRequest): Promise<Blog> {
+    return this.blogService.update(request);
   }
 }
