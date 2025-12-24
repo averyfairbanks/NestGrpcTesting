@@ -5,15 +5,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  EntityNotFoundError,
-  QueryDeepPartialEntity,
-  Repository,
-} from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreateBlogDto } from './dto/create-blog.dto';
-import { BlogEntity } from './entities/blog.entity';
-import { Blog, GetBlogRequest } from './interfaces/blog.interface';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { BlogEntity } from './entities/blog.entity';
+import { GetBlogRequest } from './interfaces/blog.interface';
 
 @Injectable()
 export class BlogService {
@@ -23,6 +19,7 @@ export class BlogService {
   ) {}
 
   findAll() {
+    // TODO: pagination/search/sort/filter/etc
     return this.blogRepository.find();
   }
 
@@ -52,14 +49,17 @@ export class BlogService {
   }
 
   create(createDto: CreateBlogDto) {
+    // TODO: exception handling
     return this.blogRepository.save(createDto);
   }
 
   update(updateDto: UpdateBlogDto) {
-    return this.blogRepository.save(updateDto)
+    // TODO: exception handling
+    return this.blogRepository.save(updateDto);
   }
 
   delete(entity: BlogEntity) {
+    // TODO: exception handling
     return this.blogRepository.remove(entity);
   }
 }

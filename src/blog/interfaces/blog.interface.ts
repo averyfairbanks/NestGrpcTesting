@@ -5,13 +5,13 @@
 // source: blog.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { wrappers } from "protobufjs";
-import { Observable } from "rxjs";
-import { Empty } from "./google/protobuf/empty.interface";
-import { Struct } from "./google/protobuf/struct.interface";
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { wrappers } from 'protobufjs';
+import { Observable } from 'rxjs';
+import { Empty } from './google/protobuf/empty.interface';
+import { Struct } from './google/protobuf/struct.interface';
 
-export const protobufPackage = "blog";
+export const protobufPackage = 'blog';
 
 export interface Blog {
   id: number;
@@ -42,9 +42,12 @@ export interface UpdateRequest {
   body?: { [key: string]: any } | undefined;
 }
 
-export const BLOG_PACKAGE_NAME = "blog";
+export const BLOG_PACKAGE_NAME = 'blog';
 
-wrappers[".google.protobuf.Struct"] = { fromObject: Struct.wrap, toObject: Struct.unwrap } as any;
+wrappers['.google.protobuf.Struct'] = {
+  fromObject: Struct.wrap,
+  toObject: Struct.unwrap,
+} as any;
 
 export interface BlogServiceClient {
   getBlog(request: GetBlogRequest): Observable<Blog>;
@@ -59,7 +62,12 @@ export interface BlogServiceClient {
 export interface BlogServiceController {
   getBlog(request: GetBlogRequest): Promise<Blog> | Observable<Blog> | Blog;
 
-  listBlogs(request: Empty): Promise<ListBlogsResponse> | Observable<ListBlogsResponse> | ListBlogsResponse;
+  listBlogs(
+    request: Empty,
+  ):
+    | Promise<ListBlogsResponse>
+    | Observable<ListBlogsResponse>
+    | ListBlogsResponse;
 
   create(request: CreateRequest): Promise<Blog> | Observable<Blog> | Blog;
 
@@ -68,17 +76,31 @@ export interface BlogServiceController {
 
 export function BlogServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getBlog", "listBlogs", "create", "update"];
+    const grpcMethods: string[] = ['getBlog', 'listBlogs', 'create', 'update'];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("BlogService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('BlogService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("BlogService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('BlogService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const BLOG_SERVICE_NAME = "BlogService";
+export const BLOG_SERVICE_NAME = 'BlogService';

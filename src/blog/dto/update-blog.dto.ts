@@ -1,3 +1,3 @@
-import { UpdateRequest } from "../interfaces/blog.interface";
+import { UpdateRequest } from '../interfaces/blog.interface';
 
 export type UpdateBlogDto = UpdateRequest;
